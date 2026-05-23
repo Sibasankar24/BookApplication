@@ -10,6 +10,8 @@ import java.util.Date;
 
 @Document (collection ="book_entries")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookEntry {
 
     @Id
