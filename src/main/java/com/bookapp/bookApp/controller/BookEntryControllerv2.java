@@ -71,14 +71,13 @@ public class BookEntryControllerv2 {
         String oldTitle=bookEntry.getTitle();
         int newPrice=newBookEntry.getPrice();
         int oldPrice=bookEntry.getPrice();
-            bookEntry.setAuthor(newAuthor!=null && !newAuthor.equals(" ")?newAuthor: oldAuthor);
+            bookEntry.setAuthor(!newAuthor.equals(" ") ?newAuthor: oldAuthor);
             bookEntry.setTitle(newTitle!=null && !newTitle.equals(" ")?newTitle:oldTitle);
             bookEntry.setPrice(newPrice!=0?newPrice:oldPrice);
+            bookEntryService.saveEntryBook(bookEntry);
+            return ResponseEntity.accepted().body("Book Entry with ID " + id + " is Updated"+bookEntry.toString());
         }
-        bookEntryService.saveEntryBook(bookEntry);
-        assert bookEntry != null;
-        return ResponseEntity.accepted().body("Book Entry with ID " + id + " is Updated"+bookEntry.toString());
-       // return ResponseEntity.ok("Book Entry with id " + id + " updated");
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
