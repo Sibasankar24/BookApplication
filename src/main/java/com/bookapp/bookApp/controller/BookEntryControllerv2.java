@@ -19,6 +19,9 @@ import java.util.*;
 public class BookEntryControllerv2 {
 
     private BookEntryService bookEntryService;
+    @Autowired
+    private BookEntryRepository bookEntryRepository;
+
     public BookEntryControllerv2(BookEntryService  bookEntryService) {
         this.bookEntryService = bookEntryService;
     }
@@ -45,10 +48,14 @@ public class BookEntryControllerv2 {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<BookEntry> createBookEntry(@RequestBody BookEntry bookEntry) {
+    @PostMapping("/addbook/{username}")
+    public ResponseEntity<BookEntry> createBookEntry(@RequestBody BookEntry bookEntry, @PathVariable String username) {
+        User user=userService.findUserByUserName(username);
         bookEntry.setDate(LocalDate.now());
-        bookEntryService.saveEntryBook(bookEntry);
+        bookEntryService.saveEntryBook(bookEntry,user);
+        BookEntry savedBook=bookEntryRepository.save(bookEntry);
+        user.getBookEntries().add(savedBook);
+        userService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(bookEntry);
     }
 
@@ -71,14 +78,13 @@ public class BookEntryControllerv2 {
         String oldTitle=bookEntry.getTitle();
         int newPrice=newBookEntry.getPrice();
         int oldPrice=bookEntry.getPrice();
-            bookEntry.setAuthor(newAuthor!=null && !newAuthor.equals(" ")?newAuthor: oldAuthor);
+            bookEntry.setAuthor(!newAuthor.equals(" ") ?newAuthor: oldAuthor);
             bookEntry.setTitle(newTitle!=null && !newTitle.equals(" ")?newTitle:oldTitle);
             bookEntry.setPrice(newPrice!=0?newPrice:oldPrice);
+            /*bookEntryService.saveEntryBook(bookEntry, user);*/
+            return ResponseEntity.accepted().body("Book Entry with ID " + id + " is Updated"+bookEntry.toString());
         }
-        bookEntryService.saveEntryBook(bookEntry);
-        assert bookEntry != null;
-        return ResponseEntity.accepted().body("Book Entry with ID " + id + " is Updated"+bookEntry.toString());
-       // return ResponseEntity.ok("Book Entry with id " + id + " updated");
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
