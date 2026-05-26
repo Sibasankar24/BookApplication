@@ -17,7 +17,8 @@ public class BookEntryService {
     @Autowired
     private BookEntryRepository bookEntryRepository;
 
-    public void saveEntryBook(BookEntry bookEntry){
+    public void saveEntryBook(BookEntry bookEntry, User user){
+
         bookEntryRepository.save(bookEntry);
     }
     public List<BookEntry> findAllBookEntries(){
