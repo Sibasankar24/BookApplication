@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Application Management System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Book Entry Application</h1>
+        <p style="color: var(--text-muted)">Manage your Books efficiently and easily</p>
+    </header>
+
+    <div class="card">
+        <div class="action-bar">
+            <h2>Book Directory</h2>
+            <a th:href="@{/showNewBookEntryForm}" class="btn btn-primary">Add New Book</a>
+        </div>
+        <!-- Empty state check -->
+        <div th:if="${#lists.isEmpty(bookEntries)}" class="empty-state">
+            <h3>No Book found</h3>
+            <p>Click the "Add New Book" button to add a Book to the system.</p>
+        </div>
+
+        <table th:unless="${#lists.isEmpty(bookEntries)}">
+            <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>Book Author</th>
+                <th>Price of The Book</th>
+                <th>Date of Publish</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="bookentry : ${bookEntries}">
+                <td th:text="${bookentry.title}"></td>
+                <td th:text="${bookentry.author}"></td>
+                <td th:text="${bookentry.price}"></td>
+                <td th:text="${bookentry.date}"></td>
+                <td class="actions">
+                    <a th:href="@{/showFormForUpdate/{id}(id=${bookentry.id})}" class="btn btn-primary">Update</a>
+                    <a th:href="@{/deletebook/{id}(id=${bookentry.id})}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this Book?');">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
